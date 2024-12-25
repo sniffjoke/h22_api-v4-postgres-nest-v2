@@ -1,6 +1,6 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { BlogsRepository } from '../../infrastructure/blogs.repository';
 import { PostsRepository } from '../../../posts/infrastructure/posts.repository';
+import { BlogsRepositoryTO } from '../../infrastructure/blogs.repository.to';
 
 export class DeletePostWithBlogInParamsCommand {
   constructor(
@@ -15,7 +15,7 @@ export class DeletePostWithBlogInParamsCommand {
 export class DeletePostWithBlogInParamsUseCase
   implements ICommandHandler<DeletePostWithBlogInParamsCommand> {
   constructor(
-    private readonly blogsRepository: BlogsRepository,
+    private readonly blogsRepository: BlogsRepositoryTO,
     private readonly postsRepository: PostsRepository
   ) {
   }

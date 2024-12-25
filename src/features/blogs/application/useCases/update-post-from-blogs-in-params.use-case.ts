@@ -1,7 +1,7 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { BlogsRepository } from '../../infrastructure/blogs.repository';
 import { PostCreateModelWithParams } from '../../../posts/api/models/input/create-post.input.model';
 import { PostsRepository } from '../../../posts/infrastructure/posts.repository';
+import { BlogsRepositoryTO } from '../../infrastructure/blogs.repository.to';
 
 export class UpdatePostWithBlogInParamsCommand {
   constructor(
@@ -17,7 +17,7 @@ export class UpdatePostWithBlogInParamsCommand {
 export class UpdatePostWithBlogInParamsUseCase
   implements ICommandHandler<UpdatePostWithBlogInParamsCommand> {
   constructor(
-    private readonly blogsRepository: BlogsRepository,
+    private readonly blogsRepository: BlogsRepositoryTO,
     private readonly postsRepository: PostsRepository
   ) {
   }
