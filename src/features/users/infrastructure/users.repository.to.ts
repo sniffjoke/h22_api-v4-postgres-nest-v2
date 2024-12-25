@@ -32,6 +32,16 @@ export class UsersRepositoryTO {
     return newUser;
   }
 
+  async findUserById(id: string) {
+    const findedUser = await this.uRepository.findOne(
+      { where: { id } },
+    );
+    if (!findedUser) {
+      throw new NotFoundException('User not found');
+    }
+    return findedUser;
+  }
+
 
   async updateUserByActivateEmail(userId: any) {
     // const findedUser = await this.uRepository.findOne({
@@ -77,16 +87,6 @@ export class UsersRepositoryTO {
       return findedEmailInfo;
     }
     return null;
-  }
-
-  async findUserById(id: string) {
-    const findedUser = await this.uRepository.findOne(
-      { where: { id } },
-    );
-    if (!findedUser) {
-      throw new NotFoundException('User not found');
-    }
-    return findedUser;
   }
 
   async findUserByIdOrNull(id: string) {

@@ -1,5 +1,5 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { BlogsRepository } from '../../infrastructure/blogs.repository';
+import { BlogsRepositoryTO } from '../../infrastructure/blogs.repository.to';
 
 export class DeleteBlogCommand {
   constructor(
@@ -13,7 +13,7 @@ export class DeleteBlogCommand {
 export class DeleteBlogUseCase
   implements ICommandHandler<DeleteBlogCommand> {
   constructor(
-    private readonly blogsRepository: BlogsRepository
+    private readonly blogsRepository: BlogsRepositoryTO
   ) {
   }
 

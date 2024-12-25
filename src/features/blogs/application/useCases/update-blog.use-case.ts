@@ -1,6 +1,6 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { BlogCreateModel } from '../../api/models/input/create-blog.input.model';
-import { BlogsRepository } from '../../infrastructure/blogs.repository';
+import { BlogsRepositoryTO } from '../../infrastructure/blogs.repository.to';
 
 export class UpdateBlogCommand {
   constructor(
@@ -15,7 +15,7 @@ export class UpdateBlogCommand {
 export class UpdateBlogUseCase
   implements ICommandHandler<UpdateBlogCommand> {
   constructor(
-    private readonly blogsRepository: BlogsRepository
+    private readonly blogsRepository: BlogsRepositoryTO
   ) {
   }
 

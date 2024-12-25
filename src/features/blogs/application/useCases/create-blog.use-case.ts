@@ -1,6 +1,6 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { BlogCreateModel } from '../../api/models/input/create-blog.input.model';
-import { BlogsRepository } from '../../infrastructure/blogs.repository';
+import { BlogsRepositoryTO } from '../../infrastructure/blogs.repository.to';
 
 export class CreateBlogCommand {
   constructor(
@@ -14,12 +14,12 @@ export class CreateBlogCommand {
 export class CreateBlogUseCase
   implements ICommandHandler<CreateBlogCommand> {
   constructor(
-    private readonly blogsRepository: BlogsRepository
+    private readonly blogsRepository: BlogsRepositoryTO
   ) {
   }
 
   async execute(command: CreateBlogCommand) {
-    const newBlogId = await this.blogsRepository.create(command.blogCreateModel)
+    const newBlogId = await this.blogsRepository.createBlog(command.blogCreateModel)
     return newBlogId
   }
 }
