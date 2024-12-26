@@ -9,9 +9,14 @@ import { UsersModule } from '../users/users.module';
 import { TokensService } from '../tokens/application/tokens.service';
 import { LikesModule } from '../likes/likes.module';
 import { PostsCommandHandlers } from './application/useCases';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { ExtendedLikesInfoEntity } from './domain/extended-likes-info.entity';
+import { PostsRepositoryTO } from './infrastructure/posts.repository.to';
+import { PostEntity } from './domain/posts.entity';
 
 @Module({
   imports: [
+    TypeOrmModule.forFeature([PostEntity, ExtendedLikesInfoEntity]),
     forwardRef(() => BlogsModule),
     CommentsModule,
     UsersModule,
@@ -20,6 +25,7 @@ import { PostsCommandHandlers } from './application/useCases';
   controllers: [PostsController],
   providers: [
     PostsRepository,
+    PostsRepositoryTO,
     PostsQueryRepository,
     TokensService,
     PostsService,
@@ -28,6 +34,7 @@ import { PostsCommandHandlers } from './application/useCases';
   exports: [
     forwardRef(() => BlogsModule),
     PostsRepository,
+    PostsRepositoryTO,
     PostsQueryRepository,
     PostsService,
     ...PostsCommandHandlers

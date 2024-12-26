@@ -1,17 +1,14 @@
-import { Body, Controller, Delete, Get, HttpCode, Param, Post, Put, Query, Req, UseGuards } from '@nestjs/common';
-import { PostCreateModel } from './models/input/create-post.input.model';
+import { Body, Controller, Get, HttpCode, Param, Post, Put, Query, Req, UseGuards } from '@nestjs/common';
 import { PostsService } from '../application/posts.service';
 import { PostsQueryRepository } from '../infrastructure/posts.query-repository';
 import { CommentCreateModel } from '../../comments/api/models/input/create-comment.input.model';
 import { CommentsService } from '../../comments/application/comments.service';
 import { CommentsQueryRepository } from '../../comments/infrastructure/comments.query-repository';
-import { BasicAuthGuard } from '../../../core/guards/basic-auth.guard';
 import { Request } from 'express';
 import { JwtAuthGuard } from '../../../core/guards/jwt-auth.guard';
 import { LikeHandler } from '../../likes/domain/like.handler';
 import { CreateLikeInput } from '../../likes/api/models/input/create-like.input.model';
 import { CommandBus } from '@nestjs/cqrs';
-import { CreatePostCommand } from '../application/useCases/create-post.use-case';
 import { CreateCommentCommand } from '../../comments/application/useCases/create-comment.use-case';
 
 @Controller()
@@ -43,14 +40,14 @@ export class PostsController {
     return post;
   }
 
-  @Post('sa/posts')
-  @UseGuards(BasicAuthGuard)
-  async createPost(@Body() dto: PostCreateModel, @Req() req: Request) {
-    const postId = await this.commandBus.execute(new CreatePostCommand(dto));
-    const newPost = await this.postsQueryRepository.postOutput(postId);
-    const postWithDetails = await this.postsService.generateOnePostWithLikesDetails(newPost, req.headers.authorization as string)
-    return postWithDetails;
-  }
+  // @Post('sa/posts')
+  // @UseGuards(BasicAuthGuard)
+  // async createPost(@Body() dto: PostCreateModel, @Req() req: Request) {
+  //   const postId = await this.commandBus.execute(new CreatePostCommand(dto));
+  //   const newPost = await this.postsQueryRepository.postOutput(postId);
+  //   const postWithDetails = await this.postsService.generateOnePostWithLikesDetails(newPost, req.headers.authorization as string)
+  //   return newPost;
+  // }
 
   @Post('posts/:id/comments')
   @UseGuards(JwtAuthGuard)
@@ -59,6 +56,7 @@ export class PostsController {
     const newComment = await this.commentsQueryRepository.commentOutput(commentId);
     const newCommentData = this.commentsService.addStatusPayload(newComment)
     return newCommentData;
+    return newComment
   }
 
   @Get('posts/:id/comments')

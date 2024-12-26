@@ -1,7 +1,7 @@
 import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from 'typeorm';
 import { UserEntity } from './user.entity';
 
-@Entity()
+@Entity('emailConfirmation')
 export class EmailConfirmationEntity {
 
   @PrimaryColumn()

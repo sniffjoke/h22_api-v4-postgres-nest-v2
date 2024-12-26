@@ -110,8 +110,9 @@ export class BlogsController {
   async createPostWithParams(@Body() dto: PostCreateModelWithParams, @Param('id') blogId: string, @Req() req: Request) {
     const postId = await this.commandBus.execute(new CreatePostCommand({ ...dto, blogId }));
     const newPost = await this.postsQueryRepository.postOutput(postId);
-    const postWithDetails = await this.postsService.generateOnePostWithLikesDetails(newPost, req.headers.authorization as string);
-    return postWithDetails;
+    // const postWithDetails = await this.postsService.generateOnePostWithLikesDetails(newPost, req.headers.authorization as string);
+    // return postWithDetails;
+    return newPost
   }
 
   @Put('sa/blogs/:blogId/posts/:postId')

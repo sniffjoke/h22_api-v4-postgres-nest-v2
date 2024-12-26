@@ -15,6 +15,9 @@ export class PostEntity {
     shortDescription: string;
 
     @Column()
+    content: string;
+
+    @Column()
     blogId: string;
 
     @Column()

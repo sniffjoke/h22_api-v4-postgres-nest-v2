@@ -1,89 +1,65 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PostCreateModel, PostCreateModelWithParams } from '../api/models/input/create-post.input.model';
-import { InjectDataSource } from '@nestjs/typeorm';
-import { DataSource } from 'typeorm';
+import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
+import { DataSource, Repository } from 'typeorm';
+import { PostEntity } from '../domain/posts.entity';
+import { ExtendedLikesInfoEntity } from '../domain/extended-likes-info.entity';
 
 
 @Injectable()
-export class PostsRepository {
+export class PostsRepositoryTO {
 
   constructor(
     @InjectDataSource() public readonly dataSource: DataSource,
+    @InjectRepository(PostEntity) private readonly pRepository: Repository<PostEntity>,
   ) {
   }
 
-  async createPost(post: PostCreateModel, blogName: string) {
-    const newPost = await this.dataSource.query(
-      `
-                    INSERT INTO posts ("title", "shortDescription", "content", "blogId", "blogName")
-                    VALUES ($1, $2, $3, $4, $5)
-                    RETURNING *
-          `,
-      [
-        post.title,
-        post.shortDescription,
-        post.content,
-        post.blogId,
-        blogName,
-      ],
-    );
-    const newExtLikesInfo = await this.dataSource.query(
-      `
-              INSERT INTO "extendedLikesInfo" VALUES ($1, $2, $3)
-      `, [
-        newPost[0].id, 0, 0
-      ]
-    )
-    return newPost[0].id;
+  async createPost(postData: PostCreateModel, blogName: string) {
+    const post = new PostEntity();
+    post.title = postData.title;
+    post.shortDescription = postData.shortDescription;
+    post.content = postData.content;
+    post.blogId = postData.blogId;
+    post.blogName = blogName;
+    const newPost = await this.pRepository.save(post);
+
+    const extendedLikesInfo = new ExtendedLikesInfoEntity();
+    extendedLikesInfo.postId = newPost.id;
+
+    extendedLikesInfo.post = post;
+
+    await this.pRepository.manager.save(extendedLikesInfo);
+
+    return newPost.id;
   }
 
   async findPostById(id: string) {
-    const findedPost = await this.dataSource.query(
-      `
-                    SELECT * 
-                    FROM posts 
-                    WHERE "id" = $1          
-          `,
-      [id]
+    const findedPost = await this.pRepository.findOne(
+      { where: { id } },
     );
-    if (!findedPost.length) {
+    if (!findedPost) {
       throw new NotFoundException(`Post with id ${id} not found`);
     }
-    return findedPost[0];
+    return findedPost;
   }
 
-  async updatePostFromBlogsUri(postId: string, blogId: string, dto: PostCreateModelWithParams) {
+  async updatePostFromBlogsUri(
+    postId: string,
+    blogId: string,
+    newPostData: Partial<PostCreateModelWithParams>,
+  ) {
     const findedPost = await this.findPostById(postId);
-    const updatePost = await this.dataSource.query(
-      `
-                    UPDATE posts
-                    SET "title" = $1, "shortDescription" = $2, "content" = $3
-                    WHERE "id" = $4 AND "blogId" = $5          
-          `,
-      [
-        dto.title,
-        dto.shortDescription,
-        dto.content,
-        postId,
-        blogId,
-      ],
-    );
-    return updatePost;
+    Object.assign(findedPost, { ...newPostData, blogId });
+    return await this.pRepository.save(findedPost);
   }
 
   async deletePostFromBlogsUri(postId: string, blogId: string) {
     const findedPost = await this.findPostById(postId);
-    const deleteBlog = await this.dataSource.query(
-      `
-                    DELETE FROM posts  
-                    WHERE "id" = $1 AND "blogId" = $2
-                `,
-      [
-        postId,
-        blogId
-      ],
+    const deletePost = await this.pRepository.delete(
+      { id: postId, blogId },
     );
-    return deleteBlog;
+    return deletePost;
   }
 
 }
