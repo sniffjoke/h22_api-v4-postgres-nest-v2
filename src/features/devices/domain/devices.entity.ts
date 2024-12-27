@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, Generated, JoinColumn, ManyToOne, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm';
 import { UserEntity } from '../../users/domain/user.entity';
 
 
@@ -8,7 +8,7 @@ export class DeviceEntity {
     @PrimaryGeneratedColumn()
     id: string;
 
-    @PrimaryColumn()
+    @Column()
     userId: string;
 
     @Column()
@@ -24,7 +24,7 @@ export class DeviceEntity {
     lastActiveDate: string;
 
     @ManyToOne(() => UserEntity, {onDelete: 'CASCADE'})
-    @JoinColumn()
+    @JoinColumn({name: 'userId'})
     user: UserEntity;
 
 }

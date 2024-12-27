@@ -10,7 +10,6 @@ import { ExtendedLikesInfoEntity } from '../domain/extended-likes-info.entity';
 export class PostsRepositoryTO {
 
   constructor(
-    @InjectDataSource() public readonly dataSource: DataSource,
     @InjectRepository(PostEntity) private readonly pRepository: Repository<PostEntity>,
   ) {
   }

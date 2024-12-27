@@ -1,5 +1,6 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { BlogEntity } from '../../blogs/domain/blogs.entity';
+import { CommentEntity } from '../../comments/domain/comment.entity';
 
 
 @Entity('posts')
@@ -29,4 +30,7 @@ export class PostEntity {
     @ManyToOne(() => BlogEntity, (blog) => blog.posts, {onDelete: 'CASCADE'})
     @JoinColumn({ name: 'blogId' })
     blog: BlogEntity;
+
+    @OneToMany(() => CommentEntity, (comment) => comment.post, {cascade: true})
+    comments: CommentEntity[];
 }

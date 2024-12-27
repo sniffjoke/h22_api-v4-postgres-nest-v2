@@ -43,7 +43,6 @@ export class LoginUseCase
       ip: command.myIp,
       title: command.userAgent,
     });
-
     const deviceData: any = {
       userId: findedUser.id,
       deviceId: findSession ? findSession.deviceId : this.uuidService.generate(),

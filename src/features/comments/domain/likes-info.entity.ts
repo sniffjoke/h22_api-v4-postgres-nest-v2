@@ -1,11 +1,11 @@
 import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from 'typeorm';
-import { PostEntity } from './posts.entity';
+import { CommentEntity } from './comment.entity';
 
-@Entity('extendedLikesInfo')
-export class ExtendedLikesInfoEntity {
+@Entity('likesInfo')
+export class LikesInfoEntity {
 
   @PrimaryColumn()
-  postId: string
+  commentId: string
 
 
   @Column({default: 0})
@@ -14,8 +14,8 @@ export class ExtendedLikesInfoEntity {
   @Column({default: 0})
   dislikesCount: number
 
-  @OneToOne(() => PostEntity, {cascade: true})
+  @OneToOne(() => CommentEntity, {cascade: true})
   @JoinColumn()
-  post: PostEntity;
+  comment: CommentEntity;
 
 }
