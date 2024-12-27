@@ -35,7 +35,7 @@ export class PostsController {
   }
 
   @Get('posts/:id')
-  async getBlogById(@Param('id') id: string) {
+  async getPostById(@Param('id') id: string) {
     const post = await this.postsQueryRepository.postOutput(id);
     return post;
   }

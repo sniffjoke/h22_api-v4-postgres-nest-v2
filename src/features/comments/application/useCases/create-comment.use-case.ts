@@ -1,10 +1,10 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { NotFoundException } from '@nestjs/common';
 import { TokensService } from '../../../tokens/application/tokens.service';
-import { UsersRepository } from '../../../users/infrastructure/users.repository';
-import { CommentsRepository } from '../../infrastructure/comments.repository';
 import { CommentCreateModel } from '../../api/models/input/create-comment.input.model';
-import { PostsRepository } from '../../../posts/infrastructure/posts.repository';
+import { PostsRepositoryTO } from '../../../posts/infrastructure/posts.repository.to';
+import { UsersRepositoryTO } from '../../../users/infrastructure/users.repository.to';
+import { CommentsRepositoryTO } from '../../infrastructure/comments.repository.to';
 
 export class CreateCommentCommand {
   constructor(
@@ -20,10 +20,10 @@ export class CreateCommentCommand {
 export class CreateCommentUseCase
   implements ICommandHandler<CreateCommentCommand> {
   constructor(
-    private readonly postsRepository: PostsRepository,
+    private readonly postsRepository: PostsRepositoryTO,
     private readonly tokensService: TokensService,
-    private readonly usersRepository: UsersRepository,
-    private readonly commentsRepository: CommentsRepository
+    private readonly usersRepository: UsersRepositoryTO,
+    private readonly commentsRepository: CommentsRepositoryTO
   ) {
   }
 

@@ -1,7 +1,7 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { TokensService } from '../../../tokens/application/tokens.service';
-import { CommentsRepository } from '../../infrastructure/comments.repository';
 import { UsersCheckHandler } from '../../../users/domain/users.check-handler';
+import { CommentsRepositoryTO } from '../../infrastructure/comments.repository.to';
 
 export class DeleteCommentCommand {
   constructor(
@@ -17,7 +17,7 @@ export class DeleteCommentUseCase
   implements ICommandHandler<DeleteCommentCommand> {
   constructor(
     private readonly tokensService: TokensService,
-    private readonly commentsRepository: CommentsRepository,
+    private readonly commentsRepository: CommentsRepositoryTO,
     private readonly usersCheckHandler: UsersCheckHandler
   ) {
   }
@@ -26,7 +26,7 @@ export class DeleteCommentUseCase
     const token = this.tokensService.getToken(command.bearerHeader);
     const decodedToken = this.tokensService.decodeToken(token);
     const findedComment = await this.commentsRepository.findCommentById(command.id);
-    const isOwner = this.usersCheckHandler.checkIsOwner(findedComment.userId, decodedToken._id);
+    const isOwner = this.usersCheckHandler.checkIsOwner(Number(findedComment.userId), decodedToken._id);
     if (isOwner) {
       const deleteComment = await this.commentsRepository.deleteComment(command.id);
       return deleteComment;

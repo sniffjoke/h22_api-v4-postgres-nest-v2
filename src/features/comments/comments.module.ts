@@ -15,6 +15,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { CommentEntity } from './domain/comment.entity';
 // import { CommentatorInfoEntity } from './domain/commentator-info.entity';
 import { LikesInfoEntity } from './domain/likes-info.entity';
+import { CommentsRepositoryTO } from './infrastructure/comments.repository.to';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { LikesInfoEntity } from './domain/likes-info.entity';
   providers: [
     CommentsService,
     CommentsRepository,
+    CommentsRepositoryTO,
     CommentsQueryRepository,
     TokensService,
     UsersRepository,
@@ -41,6 +43,7 @@ import { LikesInfoEntity } from './domain/likes-info.entity';
   exports: [
     CommentsService,
     CommentsRepository,
+    CommentsRepositoryTO,
     CommentsQueryRepository,
     ...CommentsCommandHandlers,
   ],

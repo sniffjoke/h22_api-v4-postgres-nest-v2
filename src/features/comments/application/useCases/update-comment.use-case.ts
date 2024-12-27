@@ -1,8 +1,8 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { TokensService } from '../../../tokens/application/tokens.service';
-import { CommentsRepository } from '../../infrastructure/comments.repository';
 import { CommentCreateModel } from '../../api/models/input/create-comment.input.model';
 import { UsersCheckHandler } from '../../../users/domain/users.check-handler';
+import { CommentsRepositoryTO } from '../../infrastructure/comments.repository.to';
 
 export class UpdateCommentCommand {
   constructor(
@@ -19,7 +19,7 @@ export class UpdateCommentUseCase
   implements ICommandHandler<UpdateCommentCommand> {
   constructor(
     private readonly tokensService: TokensService,
-    private readonly commentsRepository: CommentsRepository,
+    private readonly commentsRepository: CommentsRepositoryTO,
     private readonly usersCheckHandler: UsersCheckHandler
   ) {
   }
@@ -28,7 +28,7 @@ export class UpdateCommentUseCase
     const token = this.tokensService.getToken(command.bearerHeader);
     const decodedToken = this.tokensService.decodeToken(token);
     const findedComment = await this.commentsRepository.findCommentById(command.id);
-    const isOwner = this.usersCheckHandler.checkIsOwner(findedComment.userId, decodedToken._id);
+    const isOwner = this.usersCheckHandler.checkIsOwner(Number(findedComment.userId), decodedToken._id);
     if (isOwner) {
       const updateComment = await this.commentsRepository.updateComment(command.id, command.commentDto);
       return updateComment;
