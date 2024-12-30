@@ -57,20 +57,18 @@ export class PostsController {
     const commentId = await this.commandBus.execute(new CreateCommentCommand(dto, postId, req.headers.authorization as string));
     const user = await this.usersService.getUserByAuthToken(req.headers.authorization as string);
     const newComment = await this.commentsQueryRepository.commentOutput(commentId, user);
-    // const newCommentData = this.commentsService.addStatusPayload(newComment)
-    // return newCommentData;
-    return newComment
+    const newCommentData = this.commentsService.addStatusPayload(newComment)
+    return newCommentData;
   }
 
   @Get('posts/:id/comments')
   async getAllCommentsByPostId(@Param('id') id: string, @Query() query: any, @Req() req: Request) {
     const comments = await this.commentsQueryRepository.getAllCommentByPostIdWithQuery(query, id, req.headers.authorization as string);
-    // const commentsMap = await this.commentsService.generateCommentsData(comments.items, req.headers.authorization as string)
-    // return {
-    //   ...comments,
-    //   items: commentsMap
-    // }
-    return comments
+    const commentsMap = await this.commentsService.generateCommentsData(comments.items, req.headers.authorization as string)
+    return {
+      ...comments,
+      items: commentsMap
+    }
   }
 
   @Put('posts/:id/like-status')

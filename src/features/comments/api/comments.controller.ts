@@ -1,9 +1,7 @@
 import { Body, Controller, Delete, Get, HttpCode, Param, Put, Req, UseGuards } from '@nestjs/common';
-import { CommentsQueryRepository } from '../infrastructure/comments.query-repository';
 import { Request } from 'express';
 import { CommentsService } from '../application/comments.service';
 import { JwtAuthGuard } from '../../../core/guards/jwt-auth.guard';
-import { CommentsRepository } from '../infrastructure/comments.repository';
 import { CommentCreateModel } from './models/input/create-comment.input.model';
 import { LikeHandler } from '../../likes/domain/like.handler';
 import { CreateLikeInput } from '../../likes/api/models/input/create-like.input.model';

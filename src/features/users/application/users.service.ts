@@ -5,8 +5,8 @@ import { UuidService } from 'nestjs-uuid';
 import { add } from 'date-fns';
 import { ConfigService } from '@nestjs/config';
 import { ConfigurationType } from '../../../core/settings/env/configuration';
-import { UsersRepository } from '../infrastructure/users.repository';
 import { TokensService } from '../../tokens/application/tokens.service';
+import { UsersRepositoryTO } from '../infrastructure/users.repository.to';
 
 @Injectable()
 export class UsersService {
@@ -15,7 +15,7 @@ export class UsersService {
     private readonly mailService: MailerService,
     private readonly uuidService: UuidService,
     private configService: ConfigService<ConfigurationType, true>,
-    private readonly usersRepository: UsersRepository,
+    private readonly usersRepository: UsersRepositoryTO,
     private readonly tokensService: TokensService,
   ) {
   }

@@ -1,8 +1,6 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { UnauthorizedException } from '@nestjs/common';
-import { UsersRepository } from '../../../users/infrastructure/users.repository';
 import { TokensService } from '../../../tokens/application/tokens.service';
-import { DevicesRepository } from '../../infrastructure/devices.repository';
 import { UsersRepositoryTO } from '../../../users/infrastructure/users.repository.to';
 import { DevicesRepositoryTO } from '../../infrastructure/devices.repository.to';
 

@@ -1,7 +1,6 @@
 import { CreateUserDto, EmailConfirmationModel } from '../../api/models/input/create-user.dto';
 import { CryptoService } from '../../../../core/modules/crypto/application/crypto.service';
 import { UsersService } from '../users.service';
-import { UsersRepository } from '../../infrastructure/users.repository';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { ConfigService } from '@nestjs/config';
 import { ConfigurationType } from '../../../../core/settings/env/configuration';

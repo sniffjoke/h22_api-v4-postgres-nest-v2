@@ -1,18 +1,18 @@
 import { Injectable} from '@nestjs/common';
 import { TokensService } from '../../tokens/application/tokens.service';
 import { CommentViewModel } from '../api/models/output/comment.view.model';
-import { UsersRepository } from '../../users/infrastructure/users.repository';
-import { CommentsRepository } from '../infrastructure/comments.repository';
 import { LikeStatus } from '../../posts/api/models/output/post.view.model';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
+import { UsersRepositoryTO } from '../../users/infrastructure/users.repository.to';
+import { CommentsRepositoryTO } from '../infrastructure/comments.repository.to';
 
 @Injectable()
 export class CommentsService {
   constructor(
     private readonly tokensService: TokensService,
-    private readonly usersRepository: UsersRepository,
-    private readonly commentsRepository: CommentsRepository,
+    private readonly usersRepository: UsersRepositoryTO,
+    private readonly commentsRepository: CommentsRepositoryTO,
     @InjectDataSource() private readonly dataSource: DataSource,
   ) {
   }

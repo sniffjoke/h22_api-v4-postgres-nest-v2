@@ -17,15 +17,11 @@ import { BlogsQueryRepositoryTO } from './infrastructure/blogs.query-repository.
   ],
   controllers: [BlogsController],
   providers: [
-    BlogsRepository,
-    BlogsQueryRepository,
     BlogsQueryRepositoryTO,
     BlogsRepositoryTO,
     ...BlogsCommandHandlers
   ],
   exports: [
-    BlogsRepository,
-    BlogsQueryRepository,
     BlogsQueryRepositoryTO,
     BlogsRepositoryTO,
     ...BlogsCommandHandlers

@@ -11,16 +11,16 @@ import {
 } from '@nestjs/common';
 import { CreateUserDto } from './models/input/create-user.dto';
 import { BasicAuthGuard } from '../../../core/guards/basic-auth.guard';
-import { UsersQueryRepository } from '../infrastructure/users.query-repositories';
 import { CreateUserCommand } from '../application/useCases/create-user.use-case';
 import { CommandBus } from '@nestjs/cqrs';
 import { DeleteUserCommand } from '../application/useCases/delete-user.use-case';
+import { UsersQueryRepositoryTO } from '../infrastructure/users.query-repositories.to';
 
 @Controller('sa')
 export class UsersController {
   constructor(
     private readonly commandBus: CommandBus,
-    private readonly usersQueryRepository: UsersQueryRepository,
+    private readonly usersQueryRepository: UsersQueryRepositoryTO,
   ) {
   }
 

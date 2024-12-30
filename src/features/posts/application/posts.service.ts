@@ -1,18 +1,18 @@
 import { Injectable } from '@nestjs/common';
-import { PostsRepository } from '../infrastructure/posts.repository';
 import { PostCreateModel } from '../api/models/input/create-post.input.model';
 import { TokensService } from '../../tokens/application/tokens.service';
 import { LikeStatus } from '../api/models/output/post.view.model';
-import { UsersRepository } from '../../users/infrastructure/users.repository';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
+import { PostsRepositoryTO } from '../infrastructure/posts.repository.to';
+import { UsersRepositoryTO } from '../../users/infrastructure/users.repository.to';
 
 @Injectable()
 export class PostsService {
   constructor(
-    private readonly postsRepository: PostsRepository,
+    private readonly postsRepository: PostsRepositoryTO,
     private readonly tokensService: TokensService,
-    private readonly usersRepository: UsersRepository,
+    private readonly usersRepository: UsersRepositoryTO,
     @InjectDataSource() private readonly dataSource: DataSource,
   ) {
   }

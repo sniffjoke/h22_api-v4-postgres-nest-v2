@@ -18,13 +18,14 @@ import { LoginCommand } from '../application/useCases/login.use-case';
 import { GetMeCommand } from '../application/useCases/get-me.use-case';
 import { RefreshTokenCommand } from '../application/useCases/refresh-token.use-case';
 import { LogoutCommand } from '../application/useCases/logout.use-case';
+import { UsersQueryRepositoryTO } from '../../users/infrastructure/users.query-repositories.to';
 
 
 @Controller('auth')
 export class AuthController {
   constructor(
     private readonly commandBus: CommandBus,
-    private readonly usersQueryRepository: UsersQueryRepository,
+    private readonly usersQueryRepository: UsersQueryRepositoryTO,
   ) {
   }
 

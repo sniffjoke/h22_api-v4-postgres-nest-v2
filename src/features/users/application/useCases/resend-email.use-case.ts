@@ -1,7 +1,6 @@
 import { BadRequestException } from '@nestjs/common';
 import { EmailConfirmationModel } from '../../api/models/input/create-user.dto';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { UsersRepository } from '../../infrastructure/users.repository';
 import { UsersService } from '../users.service';
 import { ConfigService } from '@nestjs/config';
 import { ConfigurationType } from '../../../../core/settings/env/configuration';

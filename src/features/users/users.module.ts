@@ -23,8 +23,6 @@ import { TokensModule } from '../tokens/tokens.module';
   controllers: [UsersController],
   providers: [
     UsersService,
-    UsersRepository,
-    UsersQueryRepository,
     UsersRepositoryTO,
     UsersQueryRepositoryTO,
     ...UsersCommandHandlers,
@@ -33,8 +31,6 @@ import { TokensModule } from '../tokens/tokens.module';
     CryptoModule,
     UuidModule,
     UsersService,
-    UsersRepository,
-    UsersQueryRepository,
     UsersRepositoryTO,
     UsersQueryRepositoryTO,
     ...UsersCommandHandlers,

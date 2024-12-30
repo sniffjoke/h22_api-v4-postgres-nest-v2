@@ -19,15 +19,19 @@ import { CommentsRepositoryTO } from './infrastructure/comments.repository.to';
 import { CommentsQueryRepositoryTO } from './infrastructure/comments.query-repository.to';
 import { PostEntity } from '../posts/domain/posts.entity';
 import { LikeEntity } from '../likes/domain/likes.entity';
+import { UsersRepositoryTO } from '../users/infrastructure/users.repository.to';
+import { UserEntity } from '../users/domain/user.entity';
+import { EmailConfirmationEntity } from '../users/domain/email-confirmation.entity';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([
       CommentEntity,
-      // CommentatorInfoEntity,
       LikesInfoEntity,
       PostEntity,
-      LikeEntity
+      LikeEntity,
+      UserEntity,
+      EmailConfirmationEntity
     ]),
     forwardRef(() => PostsModule),
     UsersModule,
@@ -36,21 +40,17 @@ import { LikeEntity } from '../likes/domain/likes.entity';
   controllers: [CommentsController],
   providers: [
     CommentsService,
-    CommentsRepository,
     CommentsRepositoryTO,
-    CommentsQueryRepository,
     CommentsQueryRepositoryTO,
     TokensService,
-    UsersRepository,
+    UsersRepositoryTO,
     UsersCheckHandler,
     LikeHandler,
     ...CommentsCommandHandlers,
   ],
   exports: [
     CommentsService,
-    CommentsRepository,
     CommentsRepositoryTO,
-    CommentsQueryRepository,
     CommentsQueryRepositoryTO,
     ...CommentsCommandHandlers,
   ],

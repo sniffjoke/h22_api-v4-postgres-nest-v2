@@ -14,7 +14,6 @@ import { BlogsQueryRepository } from '../infrastructure/blogs.query-repository';
 import { BlogCreateModel } from './models/input/create-blog.input.model';
 import { PostCreateModelWithParams } from '../../posts/api/models/input/create-post.input.model';
 import { PostsService } from '../../posts/application/posts.service';
-import { PostsQueryRepository } from '../../posts/infrastructure/posts.query-repository';
 import { BasicAuthGuard } from '../../../core/guards/basic-auth.guard';
 import { Request } from 'express';
 import { CommandBus } from '@nestjs/cqrs';
@@ -56,10 +55,10 @@ export class BlogsController {
   @Get('blogs/:id/posts')
   async getAllPostsByBlogId(@Param('id') id: string, @Query() query: any, @Req() req: Request) {
     const posts = await this.postsQueryRepository.getAllPostsWithQuery(query, id);
-    // const newData = await this.postsService.generatePostsWithLikesDetails(posts.items, req.headers.authorization as string);
+    const newData = await this.postsService.generatePostsWithLikesDetails(posts.items, req.headers.authorization as string);
     return {
       ...posts,
-      // items: newData,
+      items: newData,
     };
   }
 
@@ -112,9 +111,8 @@ export class BlogsController {
   async createPostWithParams(@Body() dto: PostCreateModelWithParams, @Param('id') blogId: string, @Req() req: Request) {
     const postId = await this.commandBus.execute(new CreatePostCommand({ ...dto, blogId }));
     const newPost = await this.postsQueryRepository.postOutput(postId);
-    // const postWithDetails = await this.postsService.generateOnePostWithLikesDetails(newPost, req.headers.authorization as string);
-    // return postWithDetails;
-    return newPost
+    const postWithDetails = await this.postsService.generateOnePostWithLikesDetails(newPost, req.headers.authorization as string);
+    return postWithDetails;
   }
 
   @Put('sa/blogs/:blogId/posts/:postId')

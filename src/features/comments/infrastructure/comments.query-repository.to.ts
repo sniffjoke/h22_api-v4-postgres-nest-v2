@@ -7,6 +7,7 @@ import { CommentEntity } from '../domain/comment.entity';
 import { PostEntity } from '../../posts/domain/posts.entity';
 import { TokensService } from '../../tokens/application/tokens.service';
 import { UsersRepository } from '../../users/infrastructure/users.repository';
+import { UsersRepositoryTO } from '../../users/infrastructure/users.repository.to';
 
 
 @Injectable()
@@ -16,7 +17,7 @@ export class CommentsQueryRepositoryTO {
       @InjectRepository(CommentEntity) private readonly cRepository: Repository<CommentEntity>,
       @InjectRepository(PostEntity) private readonly pRepository: Repository<PostEntity>,
       private readonly tokensService: TokensService,
-      private readonly usersRepository: UsersRepository,
+      private readonly usersRepository: UsersRepositoryTO,
     ) {
     }
 
