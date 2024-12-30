@@ -10,7 +10,6 @@ import {
   Query, Req,
   UseGuards,
 } from '@nestjs/common';
-import { BlogsQueryRepository } from '../infrastructure/blogs.query-repository';
 import { BlogCreateModel } from './models/input/create-blog.input.model';
 import { PostCreateModelWithParams } from '../../posts/api/models/input/create-post.input.model';
 import { PostsService } from '../../posts/application/posts.service';
@@ -97,6 +96,7 @@ export class BlogsController {
   // --------------------- SA/posts ------------------------ //
 
   @Get('sa/blogs/:id/posts')
+  @UseGuards(BasicAuthGuard)
   async getAllPostsWithBlogId(@Param('id') id: string, @Query() query: any, @Req() req: Request) {
     const posts = await this.postsQueryRepository.getAllPostsWithQuery(query, id);
     const newData = await this.postsService.generatePostsWithLikesDetails(posts.items, req.headers.authorization as string);
@@ -129,6 +129,16 @@ export class BlogsController {
   async deletePost(@Param() idParams: any) {
     const deletePost = await this.commandBus.execute(new DeletePostWithBlogInParamsCommand(idParams.postId, idParams.blogId));
     return deletePost;
+  }
+
+  @Get('sa/blogs/:id/posts')
+  async getAllPostsWithBlogIdWithoutAuth(@Param('id') id: string, @Query() query: any, @Req() req: Request) {
+    const posts = await this.postsQueryRepository.getAllPostsWithQuery(query, id);
+    const newData = await this.postsService.generatePostsWithLikesDetails(posts.items, req.headers.authorization as string);
+    return {
+      ...posts,
+      items: newData,
+    };
   }
 
 }
