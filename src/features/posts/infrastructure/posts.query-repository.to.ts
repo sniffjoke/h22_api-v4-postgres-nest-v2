@@ -42,8 +42,8 @@ export class PostsQueryRepositoryTO {
         ])
         .where('p.blogId = :blogId', { blogId })
         .orderBy(`"${generateQuery.sortBy}"`, generateQuery.sortDirection.toUpperCase())
-        .skip((generateQuery.page - 1) * generateQuery.pageSize)
-        .take(generateQuery.pageSize)
+        .offset((generateQuery.page - 1) * generateQuery.pageSize)
+        .limit(generateQuery.pageSize)
         .getRawMany()
       :
       await this.pRepository
