@@ -13,7 +13,6 @@ import { LikesModule } from '../likes/likes.module';
 import { CommentsCommandHandlers } from './application/useCases';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CommentEntity } from './domain/comment.entity';
-// import { CommentatorInfoEntity } from './domain/commentator-info.entity';
 import { LikesInfoEntity } from './domain/likes-info.entity';
 import { CommentsRepositoryTO } from './infrastructure/comments.repository.to';
 import { CommentsQueryRepositoryTO } from './infrastructure/comments.query-repository.to';
