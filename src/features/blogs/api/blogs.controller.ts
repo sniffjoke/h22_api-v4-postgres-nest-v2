@@ -7,14 +7,14 @@ import {
   Param,
   Post,
   Put,
-  Query, Req,
+  Query, Req, Res,
   UseGuards,
 } from '@nestjs/common';
 import { BlogCreateModel } from './models/input/create-blog.input.model';
 import { PostCreateModelWithParams } from '../../posts/api/models/input/create-post.input.model';
 import { PostsService } from '../../posts/application/posts.service';
 import { BasicAuthGuard } from '../../../core/guards/basic-auth.guard';
-import { Request } from 'express';
+import { Request, Response } from 'express';
 import { CommandBus } from '@nestjs/cqrs';
 import { CreateBlogCommand } from '../application/useCases/create-blog.use-case';
 import { UpdateBlogCommand } from '../application/useCases/update-blog.use-case';
@@ -39,7 +39,7 @@ export class BlogsController {
 
 // TODO: метод execute pattern (service)
 
-  @Get('blogs')
+  @Get('blogs') //-1
   async getAll(@Query() query: any) {
     const blogsWithQuery = await this.blogsQueryRepository.getAllBlogsWithQuery(query);
     return blogsWithQuery;
@@ -105,7 +105,7 @@ export class BlogsController {
   }
 
   @Get('sa/blogs/:id/posts')
-  @UseGuards(BasicAuthGuard)
+  // @UseGuards(BasicAuthGuard)
   async getAllPostsWithBlogId(@Param('id') id: string, @Query() query: any, @Req() req: Request) {
     const posts = await this.postsQueryRepository.getAllPostsWithQuery(query, id);
     const newData = await this.postsService.generatePostsWithLikesDetails(posts.items, req.headers.authorization as string);
@@ -129,16 +129,6 @@ export class BlogsController {
   async deletePost(@Param() idParams: any) {
     const deletePost = await this.commandBus.execute(new DeletePostWithBlogInParamsCommand(idParams.postId, idParams.blogId));
     return deletePost;
-  }
-
-  @Get('blogs/:id/posts')
-  async getAllPostsWithBlogIdWithoutAuth(@Param('id') id: string, @Query() query: any, @Req() req: Request) {
-    const posts = await this.postsQueryRepository.getAllPostsWithQuery(query, id);
-    const newData = await this.postsService.generatePostsWithLikesDetails(posts.items, req.headers.authorization as string);
-    return {
-      ...posts,
-      items: newData,
-    };
   }
 
 }

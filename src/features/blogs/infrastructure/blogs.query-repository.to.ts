@@ -15,7 +15,6 @@ export class BlogsQueryRepositoryTO {
 
   async getAllBlogsWithQuery(query: any) {
     const generateQuery = await this.generateQuery(query);
-    console.log('1: ', generateQuery.searchNameTerm.toLowerCase());
     const items = await this.bRepository
       .createQueryBuilder('b')
       .where('LOWER(b.name) LIKE LOWER(:name)', {name: generateQuery.searchNameTerm.toLowerCase()})

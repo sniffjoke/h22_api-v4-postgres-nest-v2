@@ -13,10 +13,11 @@ import { PostsRepositoryTO } from './infrastructure/posts.repository.to';
 import { PostEntity } from './domain/posts.entity';
 import { PostsQueryRepositoryTO } from './infrastructure/posts.query-repository.to';
 import { LikeEntity } from '../likes/domain/likes.entity';
+import { BlogEntity } from '../blogs/domain/blogs.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([PostEntity, ExtendedLikesInfoEntity, LikeEntity]),
+    TypeOrmModule.forFeature([PostEntity, ExtendedLikesInfoEntity, LikeEntity, BlogEntity]),
     forwardRef(() => BlogsModule),
     CommentsModule,
     UsersModule,

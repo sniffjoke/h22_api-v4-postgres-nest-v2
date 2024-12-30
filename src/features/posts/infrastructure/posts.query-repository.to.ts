@@ -4,19 +4,21 @@ import { Repository } from 'typeorm';
 import { PostViewModel } from '../api/models/output/post.view.model';
 import { PaginationBaseModel } from '../../../core/base/pagination.base.model';
 import { PostEntity } from '../domain/posts.entity';
+import { BlogEntity } from '../../blogs/domain/blogs.entity';
 
 
 @Injectable()
 export class PostsQueryRepositoryTO {
   constructor(
     @InjectRepository(PostEntity) private readonly pRepository: Repository<PostEntity>,
+    @InjectRepository(BlogEntity) private readonly bRepository: Repository<BlogEntity>,
   ) {
   }
 
   async getAllPostsWithQuery(query: any, blogId?: string) {
     const generateQuery = await this.generateQuery(query, blogId);
     if (blogId) {
-      const findedBlog = await this.pRepository.findOne({
+      const findedBlog = await this.bRepository.findOne({
         where: { id: blogId },
       });
       if (!findedBlog) {
