@@ -20,7 +20,7 @@ export class PostsQueryRepositoryTO {
         where: { id: blogId },
       });
       if (!findedBlog) {
-        throw new BadRequestException(`Blog with id ${blogId} not found`);
+        throw new NotFoundException(`Blog with id ${blogId} not found`);
       }
     }
 
@@ -123,7 +123,7 @@ export class PostsQueryRepositoryTO {
       .where('p.id = :id', { id: postId })
       .getRawOne();
     if (!findedPost) {
-      throw new NotFoundException(`Post with id ${postId} not found`);
+      throw new BadRequestException(`Post with id ${postId} not found`);
     }
     const post = {
       id: findedPost.id,
