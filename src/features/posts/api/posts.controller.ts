@@ -29,17 +29,18 @@ export class PostsController {
   @Get('posts')
   async getAllPosts(@Query() query: any, @Req() req: Request) {
     const posts = await this.postsQueryRepository.getAllPostsWithQuery(query);
-    const newData = await this.postsService.generatePostsWithLikesDetails(posts.items, req.headers.authorization as string)
+    const newData = await this.postsService.generatePostsWithLikesDetails(posts.items, req.headers.authorization as string);
     return {
       ...posts,
-      items: newData
+      items: newData,
     };
   }
 
   @Get('posts/:id')
-  async getPostById(@Param('id') id: string) {
+  async getPostById(@Param('id') id: string, @Req() req: Request) {
     const post = await this.postsQueryRepository.postOutput(id);
-    return post;
+    const postWithDetails = await this.postsService.generateOnePostWithLikesDetails(post, req.headers.authorization as string);
+    return postWithDetails;
   }
 
   // @Post('sa/posts')
@@ -57,25 +58,28 @@ export class PostsController {
     const commentId = await this.commandBus.execute(new CreateCommentCommand(dto, postId, req.headers.authorization as string));
     const user = await this.usersService.getUserByAuthToken(req.headers.authorization as string);
     const newComment = await this.commentsQueryRepository.commentOutput(commentId, user);
-    const newCommentData = this.commentsService.addStatusPayload(newComment)
+    const newCommentData = this.commentsService.addStatusPayload(newComment);
     return newCommentData;
   }
 
   @Get('posts/:id/comments')
   async getAllCommentsByPostId(@Param('id') id: string, @Query() query: any, @Req() req: Request) {
     const comments = await this.commentsQueryRepository.getAllCommentByPostIdWithQuery(query, id, req.headers.authorization as string);
-    const commentsMap = await this.commentsService.generateCommentsData(comments.items, req.headers.authorization as string)
+    const commentsMap = await this.commentsService.generateCommentsData(comments.items, req.headers.authorization as string);
     return {
       ...comments,
-      items: commentsMap
-    }
+      items: commentsMap,
+    };
   }
 
   @Put('posts/:id/like-status')
   @HttpCode(204)
   @UseGuards(JwtAuthGuard)
   async updatePostByIdWithLikeStatus(@Body() like: CreateLikeInput, @Param('id') postId: string, @Req() req: Request) {
-    const { findedPost, user} = await this.postsService.updatePostByIdWithLikeStatus(req.headers.authorization as string, postId);
+    const {
+      findedPost,
+      user,
+    } = await this.postsService.updatePostByIdWithLikeStatus(req.headers.authorization as string, postId);
     return await this.likeHandler.postHandler(like.likeStatus, findedPost, user);
   }
 
