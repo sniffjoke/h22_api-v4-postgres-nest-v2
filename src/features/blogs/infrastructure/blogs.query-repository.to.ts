@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { BlogViewModel } from '../api/models/output/blog.view.model';
-import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
-import { DataSource, Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { PaginationBaseModel } from '../../../core/base/pagination.base.model';
 import { BlogEntity } from '../domain/blogs.entity';
 
@@ -15,9 +15,10 @@ export class BlogsQueryRepositoryTO {
 
   async getAllBlogsWithQuery(query: any) {
     const generateQuery = await this.generateQuery(query);
+    console.log('1: ', generateQuery.searchNameTerm.toLowerCase());
     const items = await this.bRepository
       .createQueryBuilder('b')
-      .where('b.name LIKE :name', {name: generateQuery.searchNameTerm.toLowerCase()})
+      .where('LOWER(b.name) LIKE LOWER(:name)', {name: generateQuery.searchNameTerm.toLowerCase()})
       .orderBy(`"${generateQuery.sortBy}"`, generateQuery.sortDirection.toUpperCase())
       .skip((generateQuery.page - 1) * generateQuery.pageSize)
       .take(generateQuery.pageSize)
@@ -31,7 +32,7 @@ export class BlogsQueryRepositoryTO {
     const searchNameTerm: string = query.searchNameTerm ? query.searchNameTerm : '';
     const totalCount = await this.bRepository
       .createQueryBuilder('b')
-      .where('b.name LIKE :name', {name: `%${searchNameTerm.toLowerCase()}%`})
+      .where('LOWER(b.name) LIKE LOWER(:name)', {name: `%${searchNameTerm.toLowerCase()}%`})
       .getCount()
     const pageSize = query.pageSize ? +query.pageSize : 10;
     const pagesCount = Math.ceil(totalCount / pageSize);

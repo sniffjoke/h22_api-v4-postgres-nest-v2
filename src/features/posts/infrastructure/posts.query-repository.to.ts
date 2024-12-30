@@ -80,7 +80,6 @@ export class PostsQueryRepositoryTO {
       };
     });
     const itemsOutput = items.map(item => this.postOutputMap(item));
-    console.log('items: ', itemsOutput);
     const resultPosts = new PaginationBaseModel<PostViewModel>(generateQuery, itemsOutput);
     return resultPosts;
   }
