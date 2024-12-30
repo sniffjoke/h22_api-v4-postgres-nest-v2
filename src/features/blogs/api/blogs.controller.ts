@@ -95,6 +95,15 @@ export class BlogsController {
 
   // --------------------- SA/posts ------------------------ //
 
+  @Post('sa/blogs/:id/posts')
+  @UseGuards(BasicAuthGuard)
+  async createPostWithParams(@Body() dto: PostCreateModelWithParams, @Param('id') blogId: string, @Req() req: Request) {
+    const postId = await this.commandBus.execute(new CreatePostCommand({ ...dto, blogId }));
+    const newPost = await this.postsQueryRepository.postOutput(postId);
+    const postWithDetails = await this.postsService.generateOnePostWithLikesDetails(newPost, req.headers.authorization as string);
+    return postWithDetails;
+  }
+
   @Get('sa/blogs/:id/posts')
   @UseGuards(BasicAuthGuard)
   async getAllPostsWithBlogId(@Param('id') id: string, @Query() query: any, @Req() req: Request) {
@@ -104,15 +113,6 @@ export class BlogsController {
       ...posts,
       items: newData,
     };
-  }
-
-  @Post('sa/blogs/:id/posts')
-  @UseGuards(BasicAuthGuard)
-  async createPostWithParams(@Body() dto: PostCreateModelWithParams, @Param('id') blogId: string, @Req() req: Request) {
-    const postId = await this.commandBus.execute(new CreatePostCommand({ ...dto, blogId }));
-    const newPost = await this.postsQueryRepository.postOutput(postId);
-    const postWithDetails = await this.postsService.generateOnePostWithLikesDetails(newPost, req.headers.authorization as string);
-    return postWithDetails;
   }
 
   @Put('sa/blogs/:blogId/posts/:postId')
