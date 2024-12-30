@@ -61,9 +61,10 @@ export class PostsQueryRepositoryTO {
           'e."dislikesCount"',
         ])
         .orderBy(`"${generateQuery.sortBy}"`, generateQuery.sortDirection.toUpperCase())
-        .skip((generateQuery.page - 1) * generateQuery.pageSize)
-        .take(generateQuery.pageSize)
+        .offset((generateQuery.page - 1) * generateQuery.pageSize)
+        .limit(generateQuery.pageSize)
         .getRawMany();
+    console.log((generateQuery.page - 1) * generateQuery.pageSize);
     const items = itemsRaw.map(post => {
       return {
         id: post.id,
