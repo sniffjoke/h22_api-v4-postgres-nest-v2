@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { PostViewModel } from '../api/models/output/post.view.model';
@@ -64,7 +64,6 @@ export class PostsQueryRepositoryTO {
         .offset((generateQuery.page - 1) * generateQuery.pageSize)
         .limit(generateQuery.pageSize)
         .getRawMany();
-    console.log((generateQuery.page - 1) * generateQuery.pageSize);
     const items = itemsRaw.map(post => {
       return {
         id: post.id,
@@ -123,7 +122,7 @@ export class PostsQueryRepositoryTO {
       .where('p.id = :id', { id: postId })
       .getRawOne();
     if (!findedPost) {
-      throw new BadRequestException(`Post with id ${postId} not found`);
+      throw new NotFoundException(`Post with id ${postId} not found`);
     }
     const post = {
       id: findedPost.id,

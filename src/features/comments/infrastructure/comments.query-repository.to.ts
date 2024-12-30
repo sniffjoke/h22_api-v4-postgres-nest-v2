@@ -55,9 +55,7 @@ export class CommentsQueryRepositoryTO {
           //     generateQuery.pageSize,
           // ],
         // )
-        console.log('comments: ', comments);
         const commentsOutput = comments.map(item => this.commentOutputMap(item, user))
-        console.log('commentsOutput: ', commentsOutput);
         const resultComments = new PaginationBaseModel<CommentViewModel>(generateQuery, commentsOutput)
         return resultComments
     }
@@ -111,7 +109,6 @@ export class CommentsQueryRepositoryTO {
     }
 
     commentOutputMap(comment: any, user: any) {
-        console.log('comment: ', comment);
         const {id, content, likesInfo, createdAt} = comment
         return {
             id,
