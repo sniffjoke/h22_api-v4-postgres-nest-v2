@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { PostViewModel } from '../api/models/output/post.view.model';
@@ -20,7 +20,7 @@ export class PostsQueryRepositoryTO {
         where: { id: blogId },
       });
       if (!findedBlog) {
-        throw new NotFoundException(`Blog with id ${blogId} not found`);
+        throw new BadRequestException(`Blog with id ${blogId} not found`);
       }
     }
 
