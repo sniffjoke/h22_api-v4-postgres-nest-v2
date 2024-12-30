@@ -24,28 +24,6 @@ export class PostsQueryRepositoryTO {
       }
     }
 
-    const ite = await this.pRepository
-      .createQueryBuilder('p')
-      .innerJoin('extendedLikesInfo', 'e', 'e."postId" = p."id"')
-      .select([
-        'p."id"',
-        'p."title"',
-        'p."shortDescription"',
-        'p."content"',
-        'p."blogId"',
-        'p."blogName"',
-        'p."createdAt"',
-        'e."likesCount"',
-        'e."dislikesCount"',
-      ])
-      .where('p.blogId = :blogId', { blogId })
-      .orderBy(`"${generateQuery.sortBy}"`, generateQuery.sortDirection.toUpperCase())
-      .skip((generateQuery.page - 1) * generateQuery.pageSize)
-      .take(generateQuery.pageSize)
-      .getCount();
-
-    console.log('Count: ', ite);
-
     const itemsRaw = blogId ?
 
       await this.pRepository
@@ -102,6 +80,7 @@ export class PostsQueryRepositoryTO {
       };
     });
     const itemsOutput = items.map(item => this.postOutputMap(item));
+    console.log('items: ', itemsOutput);
     const resultPosts = new PaginationBaseModel<PostViewModel>(generateQuery, itemsOutput);
     return resultPosts;
   }
@@ -163,7 +142,7 @@ export class PostsQueryRepositoryTO {
   }
 
   postOutputMap(post: any) {
-    const { id, title, shortDescription, content, blogId, blogName, createdAt, likesCount, dislikesCount} = post;
+    const { id, title, shortDescription, content, blogId, blogName, createdAt, extendedLikesInfo} = post;
     return {
       id: id.toString(),
       title,
@@ -172,8 +151,8 @@ export class PostsQueryRepositoryTO {
       blogId: blogId.toString(),
       blogName,
       extendedLikesInfo: {
-        likesCount,
-        dislikesCount
+        likesCount: extendedLikesInfo.likesCount,
+        dislikesCount: extendedLikesInfo.dislikesCount
       },
       createdAt,
     };

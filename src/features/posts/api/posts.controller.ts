@@ -29,6 +29,7 @@ export class PostsController {
   @Get('posts')
   async getAllPosts(@Query() query: any, @Req() req: Request) {
     const posts = await this.postsQueryRepository.getAllPostsWithQuery(query);
+    // console.log('posts: ', posts);
     const newData = await this.postsService.generatePostsWithLikesDetails(posts.items, req.headers.authorization as string)
     return {
       ...posts,
