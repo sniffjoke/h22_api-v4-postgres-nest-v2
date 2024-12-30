@@ -14,8 +14,7 @@ export class LikesInfoEntity {
   @Column({default: 0})
   dislikesCount: number
 
-  @OneToOne(() => CommentEntity, {cascade: true})
-  @JoinColumn()
+  @OneToOne(() => CommentEntity, (comment) => comment.likesInfo)
   comment: CommentEntity;
 
 }

@@ -1,25 +1,27 @@
 import { Body, Controller, Get, HttpCode, Param, Post, Put, Query, Req, UseGuards } from '@nestjs/common';
 import { PostsService } from '../application/posts.service';
-import { PostsQueryRepository } from '../infrastructure/posts.query-repository';
 import { CommentCreateModel } from '../../comments/api/models/input/create-comment.input.model';
 import { CommentsService } from '../../comments/application/comments.service';
-import { CommentsQueryRepository } from '../../comments/infrastructure/comments.query-repository';
 import { Request } from 'express';
 import { JwtAuthGuard } from '../../../core/guards/jwt-auth.guard';
 import { LikeHandler } from '../../likes/domain/like.handler';
 import { CreateLikeInput } from '../../likes/api/models/input/create-like.input.model';
 import { CommandBus } from '@nestjs/cqrs';
 import { CreateCommentCommand } from '../../comments/application/useCases/create-comment.use-case';
+import { CommentsQueryRepositoryTO } from '../../comments/infrastructure/comments.query-repository.to';
+import { UsersService } from '../../users/application/users.service';
+import { PostsQueryRepositoryTO } from '../infrastructure/posts.query-repository.to';
 
 @Controller()
 export class PostsController {
   constructor(
     private readonly postsService: PostsService,
-    private readonly postsQueryRepository: PostsQueryRepository,
+    private readonly postsQueryRepository: PostsQueryRepositoryTO,
     private readonly commentsService: CommentsService,
-    private readonly commentsQueryRepository: CommentsQueryRepository,
+    private readonly commentsQueryRepository: CommentsQueryRepositoryTO,
     private readonly likeHandler: LikeHandler,
-    private readonly commandBus: CommandBus
+    private readonly commandBus: CommandBus,
+    private readonly usersService: UsersService,
   ) {
 
   }
@@ -53,20 +55,22 @@ export class PostsController {
   @UseGuards(JwtAuthGuard)
   async createComment(@Body() dto: CommentCreateModel, @Param('id') postId: string, @Req() req: Request) {
     const commentId = await this.commandBus.execute(new CreateCommentCommand(dto, postId, req.headers.authorization as string));
-    const newComment = await this.commentsQueryRepository.commentOutput(commentId);
-    const newCommentData = this.commentsService.addStatusPayload(newComment)
-    return newCommentData;
+    const user = await this.usersService.getUserByAuthToken(req.headers.authorization as string);
+    const newComment = await this.commentsQueryRepository.commentOutput(commentId, user);
+    // const newCommentData = this.commentsService.addStatusPayload(newComment)
+    // return newCommentData;
     return newComment
   }
 
   @Get('posts/:id/comments')
   async getAllCommentsByPostId(@Param('id') id: string, @Query() query: any, @Req() req: Request) {
-    const comments = await this.commentsQueryRepository.getAllCommentByPostIdWithQuery(query, id);
-    const commentsMap = await this.commentsService.generateCommentsData(comments.items, req.headers.authorization as string)
-    return {
-      ...comments,
-      items: commentsMap
-    }
+    const comments = await this.commentsQueryRepository.getAllCommentByPostIdWithQuery(query, id, req.headers.authorization as string);
+    // const commentsMap = await this.commentsService.generateCommentsData(comments.items, req.headers.authorization as string)
+    // return {
+    //   ...comments,
+    //   items: commentsMap
+    // }
+    return comments
   }
 
   @Put('posts/:id/like-status')

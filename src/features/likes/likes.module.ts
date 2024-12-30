@@ -1,8 +1,12 @@
 import { Module } from '@nestjs/common';
 import { LikeHandler } from './domain/like.handler';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { LikeEntity } from './domain/likes.entity';
 
 @Module({
-  imports: [],
+  imports: [
+    TypeOrmModule.forFeature([LikeEntity]),
+  ],
   controllers: [],
   providers: [
     LikeHandler

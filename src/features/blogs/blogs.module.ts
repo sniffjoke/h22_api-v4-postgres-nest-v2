@@ -8,6 +8,7 @@ import { BlogsRepositoryTO } from './infrastructure/blogs.repository.to';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { BlogEntity } from './domain/blogs.entity';
 import { PostEntity } from '../posts/domain/posts.entity';
+import { BlogsQueryRepositoryTO } from './infrastructure/blogs.query-repository.to';
 
 @Module({
   imports: [
@@ -18,12 +19,14 @@ import { PostEntity } from '../posts/domain/posts.entity';
   providers: [
     BlogsRepository,
     BlogsQueryRepository,
+    BlogsQueryRepositoryTO,
     BlogsRepositoryTO,
     ...BlogsCommandHandlers
   ],
   exports: [
     BlogsRepository,
     BlogsQueryRepository,
+    BlogsQueryRepositoryTO,
     BlogsRepositoryTO,
     ...BlogsCommandHandlers
   ]

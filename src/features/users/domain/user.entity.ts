@@ -1,5 +1,6 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { CommentEntity } from '../../comments/domain/comment.entity';
+import { LikeEntity } from '../../likes/domain/likes.entity';
 
 
 @Entity('users')
@@ -23,8 +24,7 @@ export class UserEntity {
   @OneToMany(() => CommentEntity, (comment) => comment.user, { cascade: true })
   comments: Comment[];
 
-  // @OneToOne(() => EmailConfirmationEntity, (emailConfirmation) => emailConfirmation.user, {cascade: true})
-  // @JoinColumn()
-  // emailConfirmation: EmailConfirmationEntity
+  @OneToMany(() => LikeEntity, (like) => like.user, {onDelete: 'CASCADE'})
+  likes: LikeEntity[];
 
 }

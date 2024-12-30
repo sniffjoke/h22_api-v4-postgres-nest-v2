@@ -10,13 +10,15 @@ import { CreateLikeInput } from '../../likes/api/models/input/create-like.input.
 import { CommandBus } from '@nestjs/cqrs';
 import { UpdateCommentCommand } from '../application/useCases/update-comment.use-case';
 import { DeleteCommentCommand } from '../application/useCases/delete-comment.use-case';
+import { CommentsQueryRepositoryTO } from '../infrastructure/comments.query-repository.to';
+import { CommentsRepositoryTO } from '../infrastructure/comments.repository.to';
 
 @Controller('comments')
 export class CommentsController {
   constructor(
     private readonly commentsService: CommentsService,
-    private readonly commentsRepository: CommentsRepository,
-    private readonly commentsQueryRepository: CommentsQueryRepository,
+    private readonly commentsRepository: CommentsRepositoryTO,
+    private readonly commentsQueryRepository: CommentsQueryRepositoryTO,
     private readonly likeHandler: LikeHandler,
     private readonly commandBus: CommandBus
   ) {
@@ -26,7 +28,7 @@ export class CommentsController {
   @Get(':id')
   async getCommentById(@Param('id') id: string, @Req() req: Request) {
     const comment = await this.commentsRepository.findCommentById(id);
-    const commentViewData = this.commentsQueryRepository.commentOutputMap(comment);
+    const commentViewData = this.commentsQueryRepository.commentOutputMap(comment, req.headers.authorization as string);
     const commentDataWithLike = await this.commentsService.generateNewCommentData(commentViewData, req.headers.authorization as string);
     return commentDataWithLike;
   }

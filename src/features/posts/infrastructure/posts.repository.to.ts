@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PostCreateModel, PostCreateModelWithParams } from '../api/models/input/create-post.input.model';
-import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
-import { DataSource, Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { PostEntity } from '../domain/posts.entity';
 import { ExtendedLikesInfoEntity } from '../domain/extended-likes-info.entity';
 

@@ -26,14 +26,16 @@ import {
 } from '../application/useCases/update-post-from-blogs-in-params.use-case';
 import { DeletePostWithBlogInParamsCommand } from '../application/useCases/delete-post-from-blogs-in-params.use-case';
 import { CreatePostCommand } from '../../posts/application/useCases/create-post.use-case';
+import { BlogsQueryRepositoryTO } from '../infrastructure/blogs.query-repository.to';
+import { PostsQueryRepositoryTO } from '../../posts/infrastructure/posts.query-repository.to';
 
 @Controller()
 export class BlogsController {
   constructor(
     private readonly commandBus: CommandBus,
-    private readonly blogsQueryRepository: BlogsQueryRepository,
+    private readonly blogsQueryRepository: BlogsQueryRepositoryTO,
     private readonly postsService: PostsService,
-    private readonly postsQueryRepository: PostsQueryRepository,
+    private readonly postsQueryRepository: PostsQueryRepositoryTO,
   ) {
   }
 
@@ -54,10 +56,10 @@ export class BlogsController {
   @Get('blogs/:id/posts')
   async getAllPostsByBlogId(@Param('id') id: string, @Query() query: any, @Req() req: Request) {
     const posts = await this.postsQueryRepository.getAllPostsWithQuery(query, id);
-    const newData = await this.postsService.generatePostsWithLikesDetails(posts.items, req.headers.authorization as string);
+    // const newData = await this.postsService.generatePostsWithLikesDetails(posts.items, req.headers.authorization as string);
     return {
       ...posts,
-      items: newData,
+      // items: newData,
     };
   }
 

@@ -1,6 +1,8 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { BlogEntity } from '../../blogs/domain/blogs.entity';
 import { CommentEntity } from '../../comments/domain/comment.entity';
+import { LikeEntity } from '../../likes/domain/likes.entity';
+import { ExtendedLikesInfoEntity } from './extended-likes-info.entity';
 
 
 @Entity('posts')
@@ -33,4 +35,10 @@ export class PostEntity {
 
     @OneToMany(() => CommentEntity, (comment) => comment.post, {cascade: true})
     comments: CommentEntity[];
+
+    @OneToMany(() => LikeEntity, (like) => like.post, {cascade: true})
+    likes: LikeEntity[];
+
+    @OneToOne(() => ExtendedLikesInfoEntity, (likeInfo) => likeInfo.post, {cascade: true})
+    extendedLikesInfo: ExtendedLikesInfoEntity;
 }

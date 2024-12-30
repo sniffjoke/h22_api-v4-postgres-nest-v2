@@ -11,12 +11,14 @@ import { UserEntity } from './domain/user.entity';
 import { EmailConfirmationEntity } from './domain/email-confirmation.entity';
 import { UsersRepositoryTO } from './infrastructure/users.repository.to';
 import { UsersQueryRepositoryTO } from './infrastructure/users.query-repositories.to';
+import { TokensModule } from '../tokens/tokens.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([UserEntity, EmailConfirmationEntity]),
     CryptoModule,
     UuidModule,
+    TokensModule
   ],
   controllers: [UsersController],
   providers: [

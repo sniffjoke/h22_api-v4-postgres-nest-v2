@@ -14,8 +14,8 @@ export class ExtendedLikesInfoEntity {
   @Column({default: 0})
   dislikesCount: number
 
-  @OneToOne(() => PostEntity, {cascade: true})
-  @JoinColumn()
+  @OneToOne(() => PostEntity, (post) => post.extendedLikesInfo,  {onDelete: 'CASCADE'})
+  @JoinColumn({name: 'postId'})
   post: PostEntity;
 
 }

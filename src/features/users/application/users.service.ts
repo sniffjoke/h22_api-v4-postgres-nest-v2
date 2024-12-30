@@ -5,6 +5,8 @@ import { UuidService } from 'nestjs-uuid';
 import { add } from 'date-fns';
 import { ConfigService } from '@nestjs/config';
 import { ConfigurationType } from '../../../core/settings/env/configuration';
+import { UsersRepository } from '../infrastructure/users.repository';
+import { TokensService } from '../../tokens/application/tokens.service';
 
 @Injectable()
 export class UsersService {
@@ -12,14 +14,15 @@ export class UsersService {
   constructor(
     private readonly mailService: MailerService,
     private readonly uuidService: UuidService,
-    private configService: ConfigService<ConfigurationType, true>
+    private configService: ConfigService<ConfigurationType, true>,
+    private readonly usersRepository: UsersRepository,
+    private readonly tokensService: TokensService,
   ) {
   }
 
   // Доменное событие
 
   public createEmailConfirmation(isConfirm: boolean) {
-    console.log('log: ', this.configService.get('mailerSettings', {infer: true}).SMTP_USER);
     const emailConfirmationNotConfirm: EmailConfirmationModel = {
       isConfirm: false,
       confirmationCode: this.uuidService.generate(),
@@ -54,4 +57,12 @@ export class UsersService {
              `,
     });
   }
+
+  async getUserByAuthToken(bearerHeader: string) {
+    const token = this.tokensService.getToken(bearerHeader);
+    const decodedToken = this.tokensService.decodeToken(token);
+    const user = await this.usersRepository.findUserById(decodedToken._id);
+    return user
+  }
+
 }

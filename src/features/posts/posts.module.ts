@@ -13,10 +13,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ExtendedLikesInfoEntity } from './domain/extended-likes-info.entity';
 import { PostsRepositoryTO } from './infrastructure/posts.repository.to';
 import { PostEntity } from './domain/posts.entity';
+import { PostsQueryRepositoryTO } from './infrastructure/posts.query-repository.to';
+import { LikeEntity } from '../likes/domain/likes.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([PostEntity, ExtendedLikesInfoEntity]),
+    TypeOrmModule.forFeature([PostEntity, ExtendedLikesInfoEntity, LikeEntity]),
     forwardRef(() => BlogsModule),
     CommentsModule,
     UsersModule,
@@ -27,6 +29,7 @@ import { PostEntity } from './domain/posts.entity';
     PostsRepository,
     PostsRepositoryTO,
     PostsQueryRepository,
+    PostsQueryRepositoryTO,
     TokensService,
     PostsService,
     ...PostsCommandHandlers
@@ -36,6 +39,7 @@ import { PostEntity } from './domain/posts.entity';
     PostsRepository,
     PostsRepositoryTO,
     PostsQueryRepository,
+    PostsQueryRepositoryTO,
     PostsService,
     ...PostsCommandHandlers
   ],

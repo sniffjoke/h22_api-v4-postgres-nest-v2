@@ -16,6 +16,9 @@ import { CommentEntity } from './domain/comment.entity';
 // import { CommentatorInfoEntity } from './domain/commentator-info.entity';
 import { LikesInfoEntity } from './domain/likes-info.entity';
 import { CommentsRepositoryTO } from './infrastructure/comments.repository.to';
+import { CommentsQueryRepositoryTO } from './infrastructure/comments.query-repository.to';
+import { PostEntity } from '../posts/domain/posts.entity';
+import { LikeEntity } from '../likes/domain/likes.entity';
 
 @Module({
   imports: [
@@ -23,6 +26,8 @@ import { CommentsRepositoryTO } from './infrastructure/comments.repository.to';
       CommentEntity,
       // CommentatorInfoEntity,
       LikesInfoEntity,
+      PostEntity,
+      LikeEntity
     ]),
     forwardRef(() => PostsModule),
     UsersModule,
@@ -34,6 +39,7 @@ import { CommentsRepositoryTO } from './infrastructure/comments.repository.to';
     CommentsRepository,
     CommentsRepositoryTO,
     CommentsQueryRepository,
+    CommentsQueryRepositoryTO,
     TokensService,
     UsersRepository,
     UsersCheckHandler,
@@ -45,6 +51,7 @@ import { CommentsRepositoryTO } from './infrastructure/comments.repository.to';
     CommentsRepository,
     CommentsRepositoryTO,
     CommentsQueryRepository,
+    CommentsQueryRepositoryTO,
     ...CommentsCommandHandlers,
   ],
 })
