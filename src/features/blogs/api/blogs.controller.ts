@@ -131,7 +131,7 @@ export class BlogsController {
     return deletePost;
   }
 
-  @Get('sa/blogs/:id/posts')
+  @Get('blogs/:id/posts')
   async getAllPostsWithBlogIdWithoutAuth(@Param('id') id: string, @Query() query: any, @Req() req: Request) {
     const posts = await this.postsQueryRepository.getAllPostsWithQuery(query, id);
     const newData = await this.postsService.generatePostsWithLikesDetails(posts.items, req.headers.authorization as string);
