@@ -38,7 +38,7 @@ export class AuthController {
 
   @Post('login')
   @HttpCode(200)
-  @UseGuards(ThrottlerGuard)
+  // @UseGuards(ThrottlerGuard)
   async login(
     @Body() loginDto: LoginDto,
     @Res({ passthrough: true }) response: Response,
@@ -66,7 +66,7 @@ export class AuthController {
 
   @Post('registration')
   @HttpCode(204)
-  @UseGuards(ThrottlerGuard)
+  // @UseGuards(ThrottlerGuard)
   async register(@Body() createUserDto: CreateUserDto) {
     const userId = await this.commandBus.execute(new CreateUserCommand(createUserDto, false))
     const newUser = await this.usersQueryRepository.userOutput(userId);
@@ -97,7 +97,7 @@ export class AuthController {
 
   @Post('registration-confirmation')
   @HttpCode(204)
-  @UseGuards(ThrottlerGuard)
+  // @UseGuards(ThrottlerGuard)
   async activateEmail(@Body() dto: EmailActivateDto) {
     const activateEmail = await this.commandBus.execute(new ActivateEmailCommand(dto.code));
     return activateEmail;
@@ -105,7 +105,7 @@ export class AuthController {
 
   @Post('registration-email-resending')
   @HttpCode(204)
-  @UseGuards(ThrottlerGuard)
+  // @UseGuards(ThrottlerGuard)
   async resendEmail(@Body() dto: ResendActivateCodeDto) {
     return await this.commandBus.execute(new ResendEmailCommand(dto.email));
   }

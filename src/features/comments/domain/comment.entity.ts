@@ -33,7 +33,6 @@ export class CommentEntity {
   user: UserEntity;
 
   @OneToOne(() => LikesInfoEntity, (likesInfo) => likesInfo.comment, {cascade: true} )
-  @JoinColumn()
   likesInfo: LikesInfoEntity
 
   @OneToMany(() => LikeEntity, (like) => like.comment, {cascade: true})

@@ -21,11 +21,8 @@ export class CommentsQueryRepositoryTO {
     ) {
     }
 
-    async getAllCommentByPostIdWithQuery(query: any, postId: string, bearerHeader: any) {
+    async getAllCommentByPostIdWithQuery(query: any, postId: string) {
         const generateQuery = await this.generateQuery(query, postId)
-        const token = this.tokensService.getToken(bearerHeader);
-        const decodedToken = this.tokensService.decodeToken(token);
-        const user = await this.usersRepository.findUserById(decodedToken._id);
         const findedPost = await this.pRepository
           .createQueryBuilder('p')
           .where('p.id = :id', { id: postId })
@@ -33,29 +30,17 @@ export class CommentsQueryRepositoryTO {
         if (!findedPost) {
             throw new NotFoundException(`Post with id ${postId} not found`);
         }
+        console.log('1: ', `"${generateQuery.sortBy}"`, generateQuery.sortDirection.toUpperCase());
         const comments = await this.cRepository
           .createQueryBuilder('c')
           .innerJoinAndSelect('c.likesInfo', 'l')
-          // .where('c.postId = :id', { id: postId })
+          .innerJoinAndSelect('c.user', 'u')
+          .where('c.postId = :id', { id: postId })
+          .orderBy('c.' + `${generateQuery.sortBy}`, generateQuery.sortDirection.toUpperCase())
+          .skip((generateQuery.page - 1) * generateQuery.pageSize)
+          .take(generateQuery.pageSize)
           .getMany()
-          // .dataSource.query(
-          // `
-          //       SELECT c.*, i.*, l.*
-          //       FROM comments c
-          //       INNER JOIN "commentatorInfo" i ON c."id" = i."commentId"
-          //       INNER JOIN "likesInfo" l ON c."id" = l."commentId"
-          //       WHERE "postId"=$1
-          //       ORDER BY "${generateQuery.sortBy}" ${generateQuery.sortDirection}
-          //       OFFSET $2
-          //       LIMIT $3
-          // `,
-          // [
-          //     postId,
-          //     (generateQuery.page - 1) * generateQuery.pageSize,
-          //     generateQuery.pageSize,
-          // ],
-        // )
-        const commentsOutput = comments.map(item => this.commentOutputMap(item, user))
+        const commentsOutput = comments.map(item => this.commentOutputMap(item, item.user))
         const resultComments = new PaginationBaseModel<CommentViewModel>(generateQuery, commentsOutput)
         return resultComments
     }
@@ -86,35 +71,28 @@ export class CommentsQueryRepositoryTO {
 
 
 
-    async commentOutput(id: string, user: any) {
+    async commentOutput(id: string) {
         const findedComment = await this.cRepository
           .createQueryBuilder('c')
           .innerJoinAndSelect('c.likesInfo', 'l')
+          .innerJoinAndSelect('c.user', 'u')
           .where('c.id = :id', { id: id })
           .getOne()
-          // .dataSource.query(
-          // `
-          //           SELECT c.*, i.*, l.*
-          //           FROM comments c
-          //           INNER JOIN "commentatorInfo" i ON c."id" = i."commentId"
-          //           INNER JOIN "likesInfo" l ON c."id" = l."commentId"
-          //           WHERE "id" = $1
-          // `,
-          // [id]
-        // )
         if (!findedComment) {
             throw new NotFoundException("Comment not found")
         }
+        const user = await this.usersRepository.findUserById(findedComment.user.id);
         return this.commentOutputMap(findedComment, user)
     }
 
     commentOutputMap(comment: any, user: any) {
-        const {id, content, likesInfo, createdAt} = comment
+        const {content, likesInfo, createdAt} = comment
+        const id = comment.id.toString()
         return {
             id,
             content,
             commentatorInfo: {
-                userId: user.id.toString(),
+                userId: (user.id).toString(),
                 userLogin: user.login
             },
             likesInfo: {

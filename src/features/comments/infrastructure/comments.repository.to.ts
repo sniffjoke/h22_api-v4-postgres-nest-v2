@@ -33,8 +33,10 @@ export class CommentsRepositoryTO {
   }
 
   async findCommentById(id: string) {
-    const findedComment = await this.cRepository.findOne(
-      { where: { id } },
+    const findedComment = await this.cRepository.findOne({
+        where: { id },
+      relations: ['user', 'likesInfo']
+      },
     );
     if (!findedComment) {
       throw new NotFoundException(`Comment with id ${id} not found`);
